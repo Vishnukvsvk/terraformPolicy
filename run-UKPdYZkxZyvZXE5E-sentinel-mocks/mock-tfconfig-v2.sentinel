@@ -1,0 +1,186 @@
+import "strings"
+
+providers = {
+	"google": {
+		"alias": "",
+		"config": {
+			"project": {
+				"constant_value": "terraformpractical",
+			},
+		},
+		"module_address":      "",
+		"name":                "google",
+		"provider_config_key": "google",
+		"version_constraint":  "",
+	},
+}
+
+resources = {
+	"google_compute_firewall.f1": {
+		"address": "google_compute_firewall.f1",
+		"config": {
+			"allow": [
+				{
+					"protocol": {
+						"constant_value": "icmp",
+					},
+				},
+				{
+					"ports": {
+						"constant_value": [
+							"80",
+							"22",
+						],
+					},
+					"protocol": {
+						"constant_value": "tcp",
+					},
+				},
+			],
+			"name": {
+				"constant_value": "firewall",
+			},
+			"network": {
+				"references": [
+					"google_compute_network.myvpc",
+				],
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "f1",
+		"provider_config_key": "google",
+		"provisioners":        [],
+		"type":                "google_compute_firewall",
+	},
+	"google_compute_instance.m1": {
+		"address": "google_compute_instance.m1",
+		"config": {
+			"boot_disk": [
+				{
+					"initialize_params": [
+						{
+							"image": {
+								"constant_value": "debian-cloud/debian-9",
+							},
+						},
+					],
+				},
+			],
+			"machine_type": {
+				"constant_value": "e2-micro",
+			},
+			"metadata_startup_script": {
+				"constant_value": "sudo apt install htop -y",
+			},
+			"name": {
+				"constant_value": "instance4",
+			},
+			"network_interface": [
+				{
+					"access_config": [
+						{},
+					],
+					"subnetwork": {
+						"references": [
+							"google_compute_subnetwork.subnet1",
+						],
+					},
+				},
+			],
+			"zone": {
+				"constant_value": "us-central1-b",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "m1",
+		"provider_config_key": "google",
+		"provisioners":        [],
+		"type":                "google_compute_instance",
+	},
+	"google_compute_network.myvpc": {
+		"address": "google_compute_network.myvpc",
+		"config": {
+			"auto_create_subnetworks": {
+				"constant_value": false,
+			},
+			"name": {
+				"constant_value": "myvpc",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "myvpc",
+		"provider_config_key": "google",
+		"provisioners":        [],
+		"type":                "google_compute_network",
+	},
+	"google_compute_subnetwork.subnet1": {
+		"address": "google_compute_subnetwork.subnet1",
+		"config": {
+			"ip_cidr_range": {
+				"constant_value": "10.0.0.0/16",
+			},
+			"name": {
+				"constant_value": "test-subnetwork",
+			},
+			"network": {
+				"references": [
+					"google_compute_network.myvpc",
+				],
+			},
+			"region": {
+				"constant_value": "us-central1",
+			},
+		},
+		"count":               {},
+		"depends_on":          [],
+		"for_each":            {},
+		"mode":                "managed",
+		"module_address":      "",
+		"name":                "subnet1",
+		"provider_config_key": "google",
+		"provisioners":        [],
+		"type":                "google_compute_subnetwork",
+	},
+}
+
+provisioners = {}
+
+variables = {}
+
+outputs = {
+	"ip1": {
+		"depends_on":     [],
+		"description":    "",
+		"module_address": "",
+		"name":           "ip1",
+		"sensitive":      false,
+		"value": {
+			"references": [
+				"google_compute_instance.m1",
+			],
+		},
+	},
+}
+
+module_calls = {}
+
+strip_index = func(addr) {
+	s = strings.split(addr, ".")
+	for s as i, v {
+		s[i] = strings.split(v, "[")[0]
+	}
+
+	return strings.join(s, ".")
+}

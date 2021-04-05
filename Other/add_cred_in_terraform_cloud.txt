@@ -1,0 +1,17 @@
+Open the file with vim
+
+vi gcp-credential.json
+
+press :
+
+Add the following 
+%s;\n; ;g
+
+Press enter.
+
+press : again
+
+type wq
+
+Now copy this to value in environmet variables
+key is GOOGLE_CREDENTIALS
